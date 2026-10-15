@@ -1,7 +1,6 @@
-# Normativa de programación ESAT en C y C++ — Edición 2026
+# Normativa de programación ESAT en C y C++ Edición 2026
 
 - [Cómo utilizar esta normativa](#cómo-utilizar-esta-normativa)
-- [Índice](#índice)
 - [1. Nomenclatura](#1-nomenclatura)
   - [1.1 Reglas generales de nomenclatura](#11-reglas-generales-de-nomenclatura)
   - [1.2 Nombres de fichero](#12-nombres-de-fichero)
@@ -97,8 +96,6 @@
 ## Cómo utilizar esta normativa
 
 Este documento recoge las normas de programación de la edición 2026. Los ejemplos de código se presentan en bloques Markdown para facilitar su lectura y copia.
-
-## Índice
 
 ## 1. Nomenclatura
 
