@@ -101,7 +101,7 @@ Este documento recoge las normas de programación de la edición 2026. Los ejemp
 
 Esta sección describe las normas para poner nombre a los elementos del código fuente: las variables, las funciones, las estructuras, las clases, los ficheros, etc...
 
-Todo el código fuente debe ser escrito y comentado **EN INGLÉS** manteniendo un juego de caracteres standard ASCII-7 (esto es, sin ñ, vocales acentuadas, ç y otros símbolos).
+Todo el código fuente debe ser escrito y comentado **EN INGLÉS** manteniendo un juego de caracteres standard ASCII-7 (esto es, sin ñ, vocales acentuadas, ç y otros símbolos), a no ser que necesidades específicas del fichero requieran una codificación UTF-8.
 
 ### 1.1 Reglas generales de nomenclatura
 
@@ -348,9 +348,7 @@ Esta sección describe las normas de formato de texto que el código fuente debe
 
 ### 2.2 Caracteres no ASCII
 
-El uso de caracteres no ASCII debe evitarse. Si no hay más remedio que usarlos, se
-
-debe usar una codificación UTF-8.
+El uso de caracteres no ASCII debe evitarse. Si no hay más remedio que usarlos, se debe usar una codificación UTF-8.
 
 ### 2.3 Espacios VS tabulaciones
 
@@ -784,7 +782,7 @@ prevenir que se incluyan múltiples veces. El formato de la guarda es:
 
 __FICHERO_H__ 1
 
-Si dentro del mismo proyecto se encuentra dos ficheros de idéntico nombre pero distinta ruta, la ruta se incluirá como parte de la guarda de la siguiente manera:
+Si dentro del mismo proyecto se encuentran dos ficheros de idéntico nombre pero distinta ruta, la ruta se incluirá como parte de la guarda de la siguiente manera:
 
 > [!NOTE]
 > **Ejemplo de código**
@@ -829,7 +827,7 @@ Deben declararse por adelantado clases o structs de los que sólo se referencie 
 
 ### 3.3 Funciones inline
 
-En el caso de que por eficiencia se quisiera que una función fuese inline, esta será candidata a ser inline si no sobrepasa las 10 lineas de código.
+En el caso de que por eficiencia se quisiera que una función fuese inline, esta será candidata a ser inline si no sobrepasa las 10 líneas de código.
 
 Las funciones inline deben escribirse en su correspondiente fichero de cabecera después del bloque class (si lo hubiera).
 
@@ -962,7 +960,7 @@ Las variables necesarias para if, while y for normalmente deben ser declaradas d
 > **Ejemplo correcto**
 >
 > ```cpp
-> // GOOD - My constuctor and destructor get called
+> // GOOD - My constructor and destructor get called
 > // only once each
 > Foo f;
 > for (int i = 0; i < 1000000; ++i) {
@@ -974,7 +972,7 @@ Las variables necesarias para if, while y for normalmente deben ser declaradas d
 
 El uso de variables estáticas o globales, especialmente las que sean objetos, está inicialmente **PROHIBIDO** (ver excepciones más abajo): causan bugs difíciles de encontrar debido al orden indeterminado de construcción y destrucción. Sin embargo, sí está permitido el uso de constantes (constexpr), dado que no tienen inicialización ni destrucción dinámicas.
 
-Los objetos que tengan una duración estática, incluyendo variables estáticas, atributos estáticos, etc, deben ser Plain Old Data (POD): sólo int, char, float, double, punteros o arrays de POD. Esta prohibición, por tanto, prohibe el uso de variables globales o estáticas de tipo std::vector (se debe usar un array de C en ese caso), o std::string (se debe usar const char []).
+Los objetos que tengan una duración estática, incluyendo variables estáticas, atributos estáticos, etc, deben ser Plain Old Data (POD): sólo int, char, float, double, punteros o arrays de POD. Esta prohibición, por tanto, prohíbe el uso de variables globales o estáticas de tipo std::vector (se debe usar un array de C en ese caso), o std::string (se debe usar const char []).
 
 Si parece necesario el uso de una variable estática que sea un objeto, se debe usar un puntero a ese objeto.
 
@@ -1055,7 +1053,7 @@ Si una clase tiene atributos, se debe escribir al menos un constructor que los i
 
 ### 5.3 Clases copiables / movibles
 
-Si tiene sentido para una clase, se puede definir un mecanismo de copia. Pero si no tiene sentido, la copia debe estar explicitamente deshabilitada (e.g: con un constructor de copia privado o con el keyword de C++11 =delete ).
+Si tiene sentido para una clase, se puede definir un mecanismo de copia. Pero si no tiene sentido, la copia debe estar explícitamente deshabilitada (e.g: con un constructor de copia privado o con el keyword de C++11 =delete ).
 
 > [!NOTE]
 > **Ejemplo de código**
@@ -1089,7 +1087,9 @@ El uso de protected debe estar restringido a aquellos métodos que vayan a ser u
 
 ### 5.6 Herencia múltiple
 
-No está permitida.
+El uso general no está permitido. La herencia múltiple es especialmente problemática, porque a menudo impone una mayor sobrecarga de rendimiento (de hecho, la caída de rendimiento al pasar de herencia simple a herencia múltiple puede ser mayor que la caída de rendimiento de la llamada ordinaria a la llamada virtual) y porque corre el riesgo de generar patrones de herencia en diamante, que son propensos a la ambigüedad, la confusión y, directamente, bugs.
+
+La herencia múltiple se debe utilizar sólo con interfaces puras que no tengan implementación. En ese caso, sólo una de las clases bases podría tener implementación.
 
 ### 5.7 Sobrecarga de operadores
 
@@ -1352,7 +1352,7 @@ En C++11 se introduce un nuevo tipo de for que itera sobre los valores de un con
 
 ### 6.17 auto
 
-En C++11 se introduce el uso de auto para indicar un tipo de datos que se deducirá en tiempo de compilación por el contexto. Su uso está permitido en casos donde mejor la legibilidad del código y/o el tipo de una variable no es relevante (ver sección 6.16)
+En C++11 se introduce el uso de auto para indicar un tipo de datos que se deducirá en tiempo de compilación por el contexto. Su uso está permitido en casos donde mejore la legibilidad del código y/o el tipo de una variable no es relevante (ver sección 6.16).
 
 ### 6.18 Uso de constexpr
 
@@ -1404,7 +1404,23 @@ Se debe usar la sintaxis de o bien // o bien /* \*/ , mientras se sea consistent
 
 Se deben comenzar todos los ficheros con un encabezado de comentario en el que se indique el nombre del fichero, una breve descripción de lo que se implementa en él, el autor y la fecha.
 
-Generalmente un fichero .h describirá la clase que tiene declarada y una visión general de para qué sirve y cómo se usa. Un fichero .cc debería incluir más información acerca de detalles de implementación y explicación de los algoritmos. Si se entiende que estas explicaciones son de interés para alguien que sólo va a usar el .h , deben incluirse en él, pero debe indicarse en el .cc que los comentarios están en la cabecera.
+Generalmente un fichero .h describirá la clase que tiene declarada y una visión general de para qué sirve y cómo se usa.
+
+> [!NOTE]
+> **Ejemplo de comentario de cabecera**
+>
+> /**
+> * @file math_utils.h
+> * @brief Small mathematical helper functions.
+> *
+> * This header provides reusable numeric utilities used by the
+> * geometry and simulation modules.
+> *
+> * @author Your Name <login@esat-alumni.com>
+> * @date 2026-10-30
+> */
+
+Un fichero .cc debería incluir más información acerca de detalles de implementación y explicación de los algoritmos. Si se entiende que estas explicaciones son de interés para alguien que sólo va a usar el .h , deben incluirse en él, pero debe indicarse en el .cc que los comentarios están en la cabecera.
 
 NO se deben duplicar comentarios en el .h y en el .cc . Los comentarios duplicados divergen y crean errores de comprensión.
 
