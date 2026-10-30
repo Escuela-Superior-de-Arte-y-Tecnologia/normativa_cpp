@@ -147,7 +147,7 @@ Todos los ficheros deben nombrarse **EN MINÚSCULAS** usando sólo caracteres 
 > myusefulclass_test.cc
 > ```
 
-Los ficheros de código C deben tener la extensión .c , los de código C++ deben tener la extensión .cc (a no ser que se estén integrando en un motor que exija otra extensión) y los ficheros de cabecera la extensión .h . Los ficheros que vayan a ser incluidos textualmente por el pre-procesador (e.g: en una compilación multi- plataforma) pueden llevar el sufijo .inc .
+Los ficheros de código C deben tener la extensión .c , los de código C++ deben tener la extensión .cc (a no ser que se estén integrando en un motor que exija otra extensión) y los ficheros de cabecera la extensión .h . Los ficheros que vayan a ser incluidos textualmente por el pre-procesador (e.g: en una compilación multiplataforma) pueden llevar el sufijo .inc .
 
 No se deben usar nombres de fichero conocidos, como por ejemplo string.h .
 
@@ -230,7 +230,7 @@ Las variables de una struct se llaman igual que el resto de variables (no tienen
 > struct UrlTableProperties {
 >   std::string name;
 >   int num_entries;
->   static Pool<UrlTableProperties>* pool;
+>   static Pool<UrlTableProperties>* s_pool;
 > };
 > ```
 
@@ -327,9 +327,9 @@ Las enumeraciones de tipado fuerte (enum class) de C++11 también se nombran de 
 >
 > ```cpp
 > enum class UrlTableErrors {
->   k_OK,
->   k_ErrorOutOfMemory,
->   k_ErrorMalformedInput
+>   kOK,
+>   kErrorOutOfMemory,
+>   kErrorMalformedInput
 > };
 >
 > ...
@@ -597,7 +597,7 @@ Cuando se declaran variables puntero o referencia, es indiferente si el símbolo
 > // BAD -  spaces on both sides of *
 > char * c;
 > // BAD - spaces on both sides of &
-> const std::string & str;
+> const std::string & str = ... ;
 > // BAD - multiple variables declared on the same line
 > char* c, *d, *e, f;
 > ```
@@ -608,11 +608,11 @@ Cuando se declaran variables puntero o referencia, es indiferente si el símbolo
 > ```cpp
 > // GOOD - space preceding
 > char *c = nullptr;
-> const std::string &str;
+> const std::string &str = ... ;
 >
 > // GOOD - space following.
 > char* c = nullptr;
-> const std::string& str;
+> const std::string& str = ... ;
 > ```
 
 ### 2.9 Expresiones booleanas
@@ -634,7 +634,7 @@ Cuando se escriban expresiones booleanas que no quepan en una misma línea, se d
 
 No se debe parentizar el return, a no ser que se devuelva el resultado de una expresión compuesta:
 
-> [!NOTE]
+> [!CAUTION]
 > **Ejemplo de código**
 >
 > ```cpp
@@ -735,7 +735,7 @@ Las listas de inicializadores en un constructor se pueden escribir de dos formas
 >   ...
 >   DoSomething();
 >   ...
->   }
+> }
 > ```
 
 ### 2.14 Namespaces
@@ -790,12 +790,13 @@ Si dentro del mismo proyecto se encuentra dos ficheros de idéntico nombre pero 
 > **Ejemplo de código**
 >
 > ```cpp
-> #ifndef __ENGINE_H__
-> #define __ENGINE_H__ 1
+> // @file core/engine.h
+> #ifndef __CORE_ENGINE_H__
+> #define __CORE_ENGINE_H__ 1
 >
 > ...
 >
-> #endif  // __ENGINE_H__
+> #endif  // __CORE_ENGINE_H__
 > ```
 
 ### 3.2 Declaración por adelantado (forward declaration)
@@ -807,7 +808,7 @@ Deben declararse por adelantado clases o structs de los que sólo se referencie 
 >
 > ```cpp
 > // BAD
-> #include “sprite.h”
+> #include "sprite.h"
 >
 > ...
 >
@@ -886,7 +887,7 @@ En un fichero de código .cc podemos aplicar using a elementos concretos, pero e
 > using std::endl;
 >
 > void Foo() {
->   std::cout << “Foo!” << std::endl;
+>   std::cout << "Foo!" << std::endl;
 > }
 > ```
 
@@ -966,14 +967,14 @@ Las variables necesarias para if, while y for normalmente deben ser declaradas d
 > Foo f;
 > for (int i = 0; i < 1000000; ++i) {
 >   f.doSomething(i);
->   }
+> }
 > ```
 
 ### 4.5 Variables globales y variables estáticas
 
-El uso de variables estáticas o globales, especialmente las que sean objetos, está **PROHIBIDO**: causan bugs difíciles de encontrar debido al orden indeterminado de construcción y destrucción. Sin embargo, sí están permitidas sin son constantes (constexpr), dado que no tienen inicialización ni destrucción dinámicas.
+El uso de variables estáticas o globales, especialmente las que sean objetos, está inicialmente **PROHIBIDO** (ver excepciones más abajo): causan bugs difíciles de encontrar debido al orden indeterminado de construcción y destrucción. Sin embargo, sí está permitido el uso de constantes (constexpr), dado que no tienen inicialización ni destrucción dinámicas.
 
-Los objetos que tengan una duración estática, incluyendo variables estáticas, métodos y atributos estáticos, así como funciones estáticas, deben ser Plain Old Data (POD): sólo int, char, float, double, punteros o arrays de POD. Esta prohibición, por tanto, prohibe el uso de variables globales o estáticas de tipo std::vector (se debe usar un array de C en ese caso), o std::string (se debe usar const char []).
+Los objetos que tengan una duración estática, incluyendo variables estáticas, atributos estáticos, etc, deben ser Plain Old Data (POD): sólo int, char, float, double, punteros o arrays de POD. Esta prohibición, por tanto, prohibe el uso de variables globales o estáticas de tipo std::vector (se debe usar un array de C en ese caso), o std::string (se debe usar const char []).
 
 Si parece necesario el uso de una variable estática que sea un objeto, se debe usar un puntero a ese objeto.
 
@@ -1016,7 +1017,7 @@ Si un objeto requiere código no trivial, se debe escribir en el método init() 
 >   attribute_ = 0;
 >   FunctionThatCanFail();
 >   virtualFunctionThatCanFail();
->   ptr_ = malloc(kALotOfMemory);
+>   ptr_ = static_cast<MyClass*>(malloc(kALotOfMemory));
 > }
 > ```
 
@@ -1065,7 +1066,7 @@ Si tiene sentido para una clase, se puede definir un mecanismo de copia. Pero si
 >   NonCopyable& operator=(const NonCopyable&) = delete;
 >   NonCopyable(const NonCopyable&) = delete;
 >   ...
->   };
+> };
 > ```
 
 Si una clase va a ser copiable y no se espera que haya subclases que deriven de ella, se debe implementar un constructor de copia y un operador de asignación.
@@ -1094,7 +1095,7 @@ No está permitida.
 
 En general, la sobrecarga de operadores no está recomendada excepto en casos puntuales. Por eficiencia y evitar confusiones de código, es preferible usar métodos con nombre (e.g: Equals() , Add() . . .) a sobrecargar operadores como == ó + .
 
-En particular, la sobrecarga de operator& y operator” “ está **PROHIBIDA** dado que rompe otras funcionalidades de C++ (i.e. forward declaration y aritmética de punteros).
+En particular, la sobrecarga de *operator""* , *operator&* , *operator&&* , *operator||* y *operator,* está **PROHIBIDA** dado que rompe otras funcionalidades de C++ (i.e. forward declaration y aritmética de punteros).
 
 En los casos en los que la sobrecarga de operadores sea necesaria para interactuar con el API de la STL, o en objetos donde tenga un sentido semántico, la sobrecarga de operadores está permitida.
 
@@ -1163,9 +1164,9 @@ En el resto de casos, no es recomendable usar valores por defecto dado que intro
 > // Support up to 4 params by using a default
 > // empty value
 > std::string StrJoin(const char *a,
->     const char* b = nullptr,
->     const char* c = nullptr,
->     const char* d = nullptr);
+>                     const char* b = nullptr,
+>                     const char* c = nullptr,
+>                     const char* d = nullptr);
 > ```
 
 ### 6.4 Lista de argumentos variables y alloca()
@@ -1180,7 +1181,7 @@ El uso de friend está restringido a clases y funciones dentro del mismo fichero
 
 ### 6.6 Excepciones y RTTI
 
-No están permitidas las excepciones de C++ .
+No están permitidas las excepciones de C++ ni el RTTI (Run-Time Type Information).
 
 ### 6.7 Casting
 
@@ -1196,15 +1197,15 @@ Se deben usar casts de C++ , como static_cast<>() . Se deben evitar casts de C c
 >
 > ```cpp
 > // GOOD - Use of static_cast
-> Base * a = new Base;
-> Derived * b = static_cast<Derived*>(a);
+> Base* a = new Base;
+> Derived* b = static_cast<Derived*>(a);
 > ```
 
-Excepto en casos explícitos de optimización en C de bajo nivel, NO se debe usar el casting clásico de C en C++ .
+Excepto en casos explícitos de optimización en C de bajo nivel, no se debe usar el casting clásico de C en C++ .
 
 ### 6.8 Streams
 
-Se deben usar streams (e.g: ifstream, ofstream) sólo para logs. En otros casos, usar printf() o funciones similares.
+Se deben usar streams (e.g: ifstream, ofstream) preferentemente sólo para logs. En otros casos, es preferible usar printf() o funciones similares.
 
 ### 6.9 Pre-incremento y pre-decremento
 
@@ -1224,7 +1225,7 @@ De los tipos enteros incluidos en C++ , el único usable es int. Si un juego nec
 
 Cabeceras como <stdint.h> definen tipos precisos portables como int16_t, uint32_t, int64_t, etc... Deben usarse esos tipos en vez de short, unsigned long long, y otros similares que no garantizan el tamaño de la variable en múltiples plataformas.
 
-NO se deben usar tipos unsigned como medida e indicación de que una variable no baje nunca de cero (porque provocará un bug de underflow). Si una variable no debe bajar nunca de cero, se debe usar un assert.
+No se deben usar tipos unsigned como medida e indicación de que una variable no baje nunca de cero (porque provocará un bug de underflow). Si una variable no debe bajar nunca de cero, se debe usar un assert.
 
 ### 6.12 Macros
 
@@ -1253,17 +1254,17 @@ Las macros deben evitarse en la medida de lo posible. Es preferible usar funcion
 >   kNumber_Two,
 >   kNumber_Three
 > };
-> const int kMax_num = 3;
+> const int kMaxNum = 3;
 > ```
 
-- No se definen macros en los ficheros .h
+- No se deben definir macros en los ficheros .h (excepto evidentemente la guarda)
 - Escribir los #define justo antes de su uso y los #undef justo después
 - En vez de usar un #define para una macro de una función corta crítica, usar una función inline
 - Definir enums y const en vez de una serie de #define
 
 ### 6.13 Representación del cero: 0 y nullptr
 
-Se debe usar 0 para enteros, 0.0f para float, 0.0 para double, nullptr para punteros y ‘\0’ para char.
+Se debe usar 0 para enteros, 0.0f para float, 0.0 para double, nullptr para punteros y '\0' para char.
 
 ### 6.14 sizeof
 
@@ -1274,7 +1275,7 @@ sizeof() debe llamarse generalmente sobre variables en vez de sobre tipos, por s
 >
 > ```cpp
 > // BAD - sizeof over type
-> memset(&data, 0, sizeof(MyClass));
+> memset(&data, 0, sizeof(PlayerData));
 > ```
 
 > [!TIP]
@@ -1340,12 +1341,12 @@ En C++11 se introduce un nuevo tipo de for que itera sobre los valores de un con
 > ```cpp
 > int a[] = {0, 1, 2, 3, 4, 5};
 > for (int n : a) {
->   std::cout << n << ” ”;
+>   std::cout << n << " ";
 > }
 >
 > std::vector<int> v = {0, 1, 2, 3, 4, 5};
 > for (auto i : v) {
->   std::cout << i << ” ”;
+>   std::cout << i << " ";
 > }
 > ```
 
@@ -1377,16 +1378,18 @@ En C++11 se introduce el nuevo contenedor de la STL std::array , que viene a ser
 > **Ejemplo de código**
 >
 > ```cpp
-> std::array<int,10> myarray;
+> std::array<int,10> my_array;
 > unsigned int i = 0;
 >
 > // Assign some values:
-> for (i=0; i<10; ++i) myarray[i]=i;
+> for (i=0; i < 10; ++i) {
+>   my_array[i] = i;
+> }
 >
 > // Print content
-> std::cout << "myarray contains:";
+> std::cout << "my_array contains:";
 > for (i=0; i<10; ++i) {
->   std::cout << ' ' << myarray[i];
+>   std::cout << ' ' << my_array[i];
 > }
 > std::cout << '\n';
 > ```
@@ -1411,14 +1414,14 @@ Todas las definiciones de clase (en su .h) deben ir acompañadas por un comentar
 
 ### 7.4 Comentarios de funciones y métodos
 
-Sobre su declaración, todas las funciones deben tener un comentario explicando para qué sirven y cómo se usan, así como especificando su resultado (si lo devuelven) y sus parámetros (si los tienen) en sintaxis Doxygen (i.e: usando @param , @result y otros comandos Doxygen):
+Sobre su declaración, todas las funciones deben tener un comentario explicando para qué sirven y cómo se usan, así como especificando su resultado (si lo devuelven) y sus parámetros (si los tienen) en sintaxis Doxygen (i.e: usando @param , @return y otros comandos Doxygen):
 
 > [!NOTE]
 > **Ejemplo de código**
 >
 > ```cpp
 > /** Delete a URL from the cache
-> @result 0 if successful or an error code
+> @return 0 if successful or an error code
 > @param url The URL to be deleted
 > */
 > int DeleteUrl(const char* url);
@@ -1432,7 +1435,7 @@ Partes del código complejas o difíciles de entender deben ir precedidas de un 
 
 Cuando se pase un puntero a nullptr o NULL, un booleano, o valores literales enteros a funciones como parámetros, es aconsejable incluir un comentario explicando lo que son y significan, o bien hacer el código más autoexplicativo usando constantes:
 
-> [!NOTE]
+> [!CAUTION]
 > **Ejemplo de código**
 >
 > ```cpp
