@@ -171,7 +171,7 @@ Los nombres de tipos empiezan con una letra mayúsucula y tienen una mayúscul
 > class UrlTableTester { ... }
 >
 > // typedefs
-> typedef hash_map&lt;UrlTableProperties*, std::string&gt; PropertiesMap;
+> typedef hash_map<UrlTableProperties*, std::string> PropertiesMap;
 >
 > // enums
 > enum UrlTableErrors { ... }
@@ -230,7 +230,7 @@ Las variables de una struct se llaman igual que el resto de variables (no tienen
 > struct UrlTableProperties {
 >   std::string name;
 >   int num_entries;
->   static Pool&lt;UrlTableProperties&gt;* pool;
+>   static Pool<UrlTableProperties>* pool;
 > };
 > ```
 
@@ -245,7 +245,7 @@ Los atributos de clase no-estáticos se llaman igual que el resto de variables, 
 >  private:
 >   std::string table_name_;  // OK - underscore at end.
 >   std::string tablename_;   // OK.
->   static Pool&lt;TableInfo&gt;* s_pool_;  // OK.
+>   static Pool<TableInfo>* s_pool_;  // OK.
 > };
 > ```
 
@@ -562,7 +562,7 @@ En los bucles, la apertura de las llaves debe estar en la misma línea que la co
 > while (condition) {
 >   // Repeat test until it returns false.
 > }
-> for (int i = 0; i &lt; kSomeNumber; ++i) {}
+> for (int i = 0; i < kSomeNumber; ++i) {}
 > ```
 
 En los nuevos ranged for de C++11, siempre dejamos un espacio antes y después de los dos puntos:
@@ -583,9 +583,9 @@ Al escribir punteros y referencias, no se dejan espacios entre la flecha o el pu
 >
 > ```cpp
 > x = *p;
-> p = &amp;x;
+> p = &x;
 > x = r.y;
-> x = r-&gt;y;
+> x = r->y;
 > ```
 
 Cuando se declaran variables puntero o referencia, es indiferente si el símbolo * o & está junto al tipo o el nombre de la variable, pero no debe estar separado de ambos a la vez por espacios:
@@ -597,7 +597,7 @@ Cuando se declaran variables puntero o referencia, es indiferente si el símbolo
 > // BAD -  spaces on both sides of *
 > char * c;
 > // BAD - spaces on both sides of &
-> const std::string &amp; str;
+> const std::string & str;
 > // BAD - multiple variables declared on the same line
 > char* c, *d, *e, f;
 > ```
@@ -608,11 +608,11 @@ Cuando se declaran variables puntero o referencia, es indiferente si el símbolo
 > ```cpp
 > // GOOD - space preceding
 > char *c = nullptr;
-> const std::string &amp;str;
+> const std::string &str;
 >
 > // GOOD - space following.
 > char* c = nullptr;
-> const std::string&amp; str;
+> const std::string& str;
 > ```
 
 ### 2.9 Expresiones booleanas
@@ -623,9 +623,9 @@ Cuando se escriban expresiones booleanas que no quepan en una misma línea, se d
 > **Ejemplo de código**
 >
 > ```cpp
-> if (this_one_thing &gt; this_other_thing &amp;&amp;
->     a_third_thing == a_fourth_thing &amp;&amp;
->     yet_another &amp;&amp; last_one) {
+> if (this_one_thing > this_other_thing &&
+>     a_third_thing == a_fourth_thing &&
+>     yet_another && last_one) {
 >   ...
 > }
 > ```
@@ -649,7 +649,7 @@ No se debe parentizar el return, a no ser que se devuelva el resultado de una ex
 > // No parentheses in the simple case
 > return result;
 > // Parentheses OK to make a complex expression more readable
-> return (some_long_condition &amp;&amp;
+> return (some_long_condition &&
 >         another_condition);
 > ```
 
@@ -857,7 +857,7 @@ El uso de namespaces para crear ámbitos es una buena práctica. Los namespaces 
 >
 > ```cpp
 > // BAD - In a .h file
-> #include &lt;string&gt;
+> #include <string>
 >
 > using namespace std;    // FORBIDDEN - You are forcing the linkage
 >                         // of the whole available namespace symbols
@@ -870,7 +870,7 @@ El uso de namespaces para crear ámbitos es una buena práctica. Los namespaces 
 >
 > ```cpp
 > // GOOD - In a .h file
-> #include &lt;string&gt;
+> #include <string>
 >
 > std::string my_string;  // You are only linking std::string
 > ```
@@ -886,7 +886,7 @@ En un fichero de código .cc podemos aplicar using a elementos concretos, pero e
 > using std::endl;
 >
 > void Foo() {
->   std::cout &lt;&lt; “Foo!” &lt;&lt; std::endl;
+>   std::cout << “Foo!” << std::endl;
 > }
 > ```
 
@@ -929,7 +929,7 @@ C++ permite declarar variables en cualquier lugar de una función, pero siguiend
 > ```cpp
 > // BAD - Prefer initializing using
 > // brace initialization
-> std::vector&lt;int&gt; v;
+> std::vector<int> v;
 > v.push_back(1);
 > v.push_back(2);
 > ```
@@ -939,7 +939,7 @@ C++ permite declarar variables en cualquier lugar de una función, pero siguiend
 >
 > ```cpp
 > // GOOD - v starts initialized
-> std::vector&lt;int&gt; v = {1, 2};
+> std::vector<int> v = {1, 2};
 > ```
 
 Las variables necesarias para if, while y for normalmente deben ser declaradas dentro de esas estructuras de control dado que están confinadas a esos ámbitos. La excepción serán las variables que sean objetos dado que, por eficiencia, debe evitarse que el constructor se ejecute en cada iteración de un bucle for o while:
@@ -949,7 +949,7 @@ Las variables necesarias para if, while y for normalmente deben ser declaradas d
 >
 > ```cpp
 > // BAD - Inefficient implementation:
-> for (int i = 0; i &lt; 1000000; ++i) {
+> for (int i = 0; i < 1000000; ++i) {
 >   Foo f;
 >   // My constructor and destructor get called
 >   // 1000000 times each.
@@ -964,7 +964,7 @@ Las variables necesarias para if, while y for normalmente deben ser declaradas d
 > // GOOD - My constuctor and destructor get called
 > // only once each
 > Foo f;
-> for (int i = 0; i &lt; 1000000; ++i) {
+> for (int i = 0; i < 1000000; ++i) {
 >   f.doSomething(i);
 >   }
 > ```
@@ -1062,8 +1062,8 @@ Si tiene sentido para una clase, se puede definir un mecanismo de copia. Pero si
 > ```cpp
 > // The following class is non-copyable
 > class NonCopyable {
->   NonCopyable&amp; operator=(const NonCopyable&amp;) = delete;
->   NonCopyable(const NonCopyable&amp;) = delete;
+>   NonCopyable& operator=(const NonCopyable&) = delete;
+>   NonCopyable(const NonCopyable&) = delete;
 >   ...
 >   };
 > ```
@@ -1137,7 +1137,7 @@ Todos los parámetros pasados por referencia (referencias de C++) deben ser cons
 > **Ejemplo de código**
 >
 > ```cpp
-> void Foo(const std::string&amp; in, std::string* out);
+> void Foo(const std::string& in, std::string* out);
 > ```
 
 ### 6.2 Sobrecarga de funciones y métodos
@@ -1197,7 +1197,7 @@ Se deben usar casts de C++ , como static_cast<>() . Se deben evitar casts de C c
 > ```cpp
 > // GOOD - Use of static_cast
 > Base * a = new Base;
-> Derived * b = static_cast&lt;Derived*&gt;(a);
+> Derived * b = static_cast<Derived*>(a);
 > ```
 
 Excepto en casos explícitos de optimización en C de bajo nivel, NO se debe usar el casting clásico de C en C++ .
@@ -1235,7 +1235,7 @@ Las macros deben evitarse en la medida de lo posible. Es preferible usar funcion
 >
 > ```cpp
 > // BAD - unnecessary use of macros
-> #define GetMax(a,b) ((a)&gt;(b)?(a):(b))
+> #define GetMax(a,b) ((a)>(b)?(a):(b))
 > #define ONE     1
 > #define TWO     2
 > #define THREE   3
@@ -1247,7 +1247,7 @@ Las macros deben evitarse en la medida de lo posible. Es preferible usar funcion
 >
 > ```cpp
 > // GOOD
-> inline int GetMax(int a, int b) { return a&gt;b?a:b; }
+> inline int GetMax(int a, int b) { return a>b?a:b; }
 > enum Number {
 >   kNumber_One = 1,
 >   kNumber_Two,
@@ -1274,7 +1274,7 @@ sizeof() debe llamarse generalmente sobre variables en vez de sobre tipos, por s
 >
 > ```cpp
 > // BAD - sizeof over type
-> memset(&amp;data, 0, sizeof(MyClass));
+> memset(&data, 0, sizeof(MyClass));
 > ```
 
 > [!TIP]
@@ -1283,7 +1283,7 @@ sizeof() debe llamarse generalmente sobre variables en vez de sobre tipos, por s
 > ```cpp
 > // GOOD - sizeof over variable
 > struct PlayerData data;
-> memset(&amp;data, 0, sizeof(data));
+> memset(&data, 0, sizeof(data));
 > ```
 
 ### 6.15 Inicializador con llaves
@@ -1305,28 +1305,28 @@ Desde C++11, también es posible utilizar la sintaxis de las llaves para inicial
 >
 > ```cpp
 > // Vector takes a braced-init-list of elements
-> std::vector&lt;std::string&gt; v{"foo", "bar"};
+> std::vector<std::string> v{"foo", "bar"};
 >
 > // Basically the same
 > // You may choose to use either form
-> std::vector&lt;std::string&gt; v = {"foo", "bar"};
+> std::vector<std::string> v = {"foo", "bar"};
 >
 > // Usable with 'new' expressions.
-> auto p = new std::vector&lt;std::string&gt;{"foo", "bar"};
+> auto p = new std::vector<std::string>{"foo", "bar"};
 >
 > // A map can take a list of pairs
 > // Nested braced-init-lists work
-> std::map&lt;int, std::string&gt; m = {{1, "one"}, {2, "2"}};
+> std::map<int, std::string> m = {{1, "one"}, {2, "2"}};
 >
 > // A braced-init-list can be implicitly converted
 > // to a return type.
-> std::vector&lt;int&gt; test_function() { return {1, 2, 3}; }
+> std::vector<int> test_function() { return {1, 2, 3}; }
 >
 > // Iterate over a braced-init-list.
 > for (int i : {-1, -2, -3}) {}
 >
 > // Call a function using a braced-init-list
-> void TestFunction2(std::vector&lt;int&gt; v) {}
+> void TestFunction2(std::vector<int> v) {}
 > TestFunction2({1, 2, 3});
 > ```
 
@@ -1340,12 +1340,12 @@ En C++11 se introduce un nuevo tipo de for que itera sobre los valores de un con
 > ```cpp
 > int a[] = {0, 1, 2, 3, 4, 5};
 > for (int n : a) {
->   std::cout &lt;&lt; n &lt;&lt; ” ”;
+>   std::cout << n << ” ”;
 > }
 >
-> std::vector&lt;int&gt; v = {0, 1, 2, 3, 4, 5};
+> std::vector<int> v = {0, 1, 2, 3, 4, 5};
 > for (auto i : v) {
->   std::cout &lt;&lt; i &lt;&lt; ” ”;
+>   std::cout << i << ” ”;
 > }
 > ```
 
@@ -1377,18 +1377,18 @@ En C++11 se introduce el nuevo contenedor de la STL std::array , que viene a ser
 > **Ejemplo de código**
 >
 > ```cpp
-> std::array&lt;int,10&gt; myarray;
+> std::array<int,10> myarray;
 > unsigned int i = 0;
 >
 > // Assign some values:
-> for (i=0; i&lt;10; ++i) myarray[i]=i;
+> for (i=0; i<10; ++i) myarray[i]=i;
 >
 > // Print content
-> std::cout &lt;&lt; "myarray contains:";
-> for (i=0; i&lt;10; ++i) {
->   std::cout &lt;&lt; ' ' &lt;&lt; myarray[i];
+> std::cout << "myarray contains:";
+> for (i=0; i<10; ++i) {
+>   std::cout << ' ' << myarray[i];
 > }
-> std::cout &lt;&lt; '\n';
+> std::cout << '\n';
 > ```
 
 ## 7. Comentarios
