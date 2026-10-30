@@ -1,4 +1,4 @@
-# Normativa de programación ESAT en C y C++ — Edición 2026
+# Normativa reducida de programación ESAT en C y C++ — Edición 2026
 
 - [Cómo utilizar esta normativa](#cómo-utilizar-esta-normativa)
 - [Índice](#índice)
