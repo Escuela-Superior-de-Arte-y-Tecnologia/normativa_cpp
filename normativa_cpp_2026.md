@@ -1495,6 +1495,7 @@ Las reglas para nombrar los repositorios de código son las siguientes:
 
 - Comenzará por un número correspondiente al curso del alumno, i.e., “2” para segundo y “3” para tercero
 - Después dos letras mayúsculas que identificarán la asignatura a la que corresponde el repositorio siguiendo la correspondencia:
+
 | Asignatura | Siglas |
 | --- | --- |
 | Programación Avanzada | **PA** |
@@ -1508,6 +1509,7 @@ Las reglas para nombrar los repositorios de código son las siguientes:
 | Programación de Motores Gráficos | **MG** |
 | Programación Mobile | **PM** |
 | Inteligencia Artificial | **IA** |
+
 - Después un subguión y la cadena “MA_” o “TA_” dependiendo de si el alumno es de grupo de mañana o de tardes.
 - Por último, en minúsculas, el login del alumno.
 
