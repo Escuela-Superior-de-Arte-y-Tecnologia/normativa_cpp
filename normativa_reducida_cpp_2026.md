@@ -222,34 +222,6 @@ Las funciones normales deben empezar con letra mayúscula y tener una mayúscula
 > OpenFileOrDie();
 > ```
 
-Los métodos estáticos de una clase también siguen esta nomenclatura.
-
-Los métodos accessors y mutators (i.e. getters y setters) deben reflejar el nombre del atributo al que acceden. El accessor (getter) debe llamarse como el atributo menos el subguión final. El mutator (setter) debe comenzar por “set_” y seguir con el nombre del atributo sin el subguión final.
-
-El resto de métodos de una clase (que no son estáticos ni accessors ni mutators) se nombrarán empezando por una letra minúscula, sin usar subguiones, poniendo una letra mayúscula al cambiar de palabra, como por ejemplo: init(), finish(), onEnter() .
-
-> [!NOTE]
-> **Ejemplo de código**
->
-> ```cpp
-> class MyClass {
->  public:
->   ...
->   void init();
->   void onEnter();
->
->   static MyClass* CreateInstance();
->
->   int num_entries() const { return num_entries_; }
->   void set_num_entries(int num_entries) {
->     num_entries_ = num_entries;
->   }
->
->  private:
->   int num_entries_;
-> };
-> ```
-
 ### 1.7 Nombres de namespaces
 
 Los namespaces deben estar en minúscula y basarse en el nombre (y posiblemente ruta) del proyecto (e.g: edk, edk::audio . . . ) .
@@ -298,12 +270,12 @@ El tipo devuelto estará en la misma línea que el nombre de la función, así c
 > **Ejemplo de código**
 >
 > ```cpp
-> ReturnType ClassName::functionName(Type par_name1, Type par_name2) {
+> ReturnType FunctionName(Type par_name1, Type par_name2) {
 >   DoSomething();
 >   ...
 > }
 >
-> void Character::attackEnemy(Enemy* target, bool critical) {
+> void CharacterAttackEnemy(Enemy* target, bool critical) {
 >   ...
 > }
 > ```
@@ -314,7 +286,7 @@ Si el texto no cabe en una sola línea, se puede partir la lista de parámetros:
 > **Ejemplo de código**
 >
 > ```cpp
-> ReturnType ClassName::reallyLongFunctionName(Type par_name1, Type par_name2,
+> ReturnType ReallyReallyReallyLongFunctionName(Type par_name1, Type par_name2,
 >                                              Type par_name3) {
 >   DoSomething();
 >   ...
@@ -327,7 +299,7 @@ O incluso:
 > **Ejemplo de código**
 >
 > ```cpp
-> ReturnType LongClassName::reallyReallyReallyLongFunctionName(
+> ReturnType VeryLongNameOfAReallyReallyReallyLongFunctionName(
 >     Type par_name1,  // 4 space indent
 >     Type par_name2,
 >     Type par_name3) {
@@ -400,9 +372,10 @@ En otras ocasiones, los parámetros forman una estructura que tiene sentido en s
 >
 > ```cpp
 > // Transform the widget by a 3x3 matrix.
-> my_widget.Transform(x1, x2, x3,
->                     y1, y2, y3,
->                     z1, z2, z3);
+> WidgetTransform(widget,
+>                 x1, x2, x3,
+>                 y1, y2, y3,
+>                 z1, z2, z3);
 > ```
 
 ### 2.6 Condicionales
@@ -799,25 +772,6 @@ C++ permite declarar variables en cualquier lugar de una función, pero siguiend
 > int i = f();
 > ```
 
-> [!CAUTION]
-> **Ejemplo incorrecto**
->
-> ```cpp
-> // BAD - Prefer initializing using
-> // brace initialization
-> std::vector<int> v;
-> v.push_back(1);
-> v.push_back(2);
-> ```
-
-> [!TIP]
-> **Ejemplo correcto**
->
-> ```cpp
-> // GOOD - v starts initialized
-> std::vector<int> v = {1, 2};
-> ```
-
 Las variables necesarias para if, while y for normalmente deben ser declaradas dentro de esas estructuras de control dado que están confinadas a esos ámbitos. La excepción serán las variables que sean objetos dado que, por eficiencia, debe evitarse que el constructor se ejecute en cada iteración de un bucle for o while:
 
 > [!CAUTION]
@@ -827,9 +781,9 @@ Las variables necesarias para if, while y for normalmente deben ser declaradas d
 > // BAD - Inefficient implementation:
 > for (int i = 0; i < 1000000; ++i) {
 >   Foo f;
->   // My constructor and destructor get called
->   // 1000000 times each.
->   f.doSomething(i);
+>   // A Foo type variable gets instantiated
+>   // 1000000 times.
+>   DoSomething(i, &f);
 > }
 > ```
 
@@ -841,7 +795,7 @@ Las variables necesarias para if, while y for normalmente deben ser declaradas d
 > // only once each
 > Foo f;
 > for (int i = 0; i < 1000000; ++i) {
->   f.doSomething(i);
+>   DoSomething(i, &f);
 >   }
 > ```
 
