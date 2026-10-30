@@ -1395,7 +1395,7 @@ En C++11 se introduce el nuevo contenedor de la STL std::array , que viene a ser
 
 ### 7.1 Estilo de comentario y Doxygen
 
-Se debe usar la sintaxis de o bien // o bien /* */ , mientras se sea consistente. En general todas las clases, funciones, tipos, etc... deben estar correctamente comentados siguiendo la sintaxis de Doxygen, esto es, con bloques de tipo /// para una sola línea o /** */ para un bloque de líneas.
+Se debe usar la sintaxis de o bien // o bien /* \*/ , mientras se sea consistente. En general todas las clases, funciones, tipos, etc... deben estar correctamente comentados siguiendo la sintaxis de Doxygen, esto es, con bloques de tipo /// para una sola línea o /** \*/ para un bloque de líneas.
 
 ### 7.2 Comentarios de fichero
 
@@ -1495,7 +1495,17 @@ Las reglas para nombrar los repositorios de código son las siguientes:
 
 - Comenzará por un número correspondiente al curso del alumno, i.e., “2” para segundo y “3” para tercero
 - Después dos letras mayúsculas que identificarán la asignatura a la que corresponde el repositorio siguiendo la correspondencia:
-
+  - Programación Avanzada PA
+  - Algoritmos y Estructuras de Datos AD
+  - Programación del Videojuego en Red RE
+  - Programación de Bajo Nivel I B1
+  - Motores de Videojuegos II M2
+  - Programación Gráfica PG
+  - Programación de Bajo Nivel II B2
+  - Programación de Alto Nivel AN
+  - Programación de Motores Gráficos MG
+  - Programación Mobile PM
+  - Inteligencia Artificial IA
 - Después un subguión y la cadena “MA_” o “TA_” dependiendo de si el alumno es de grupo de mañana o de tardes.
 - Por último, en minúsculas, el login del alumno.
 
